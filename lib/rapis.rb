@@ -1,5 +1,7 @@
 require "rapis/version"
-
-module Rapis
-  # Your code goes here...
-end
+require "rapis/actions"
+require "rapis/cli"
+require "rapis/client"
+require "rapis/converter"
+require "rapis/logger"
+require "rapis/utils"

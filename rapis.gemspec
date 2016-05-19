@@ -9,27 +9,21 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Masashi Terui"]
   spec.email         = ["marcy9114@gmail.com"]
 
-  spec.summary       = %q{Amazon API Gateway configuration as a Ruby DSL}
-  spec.description   = %q{Amazon API Gateway configuration as a Ruby DSL}
+  spec.summary       = %q{Swagger as Ruby DSL and its deployment tool for Amazon API Gateway}
+  spec.description   = %q{Swagger as Ruby DSL and its deployment tool for Amazon API Gateway}
   spec.homepage      = "https://github.com/marcy-terui/rapis"
   spec.license       = "MIT"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "https://rubygems.org"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
-  end
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "aws-sdk", "~> 2.3.5"
-  spec.add_dependency "dslh", "~> 0.3.0"
+  spec.add_dependency "aws-sdk", "~> 2.3.9"
+  spec.add_dependency "dslh", "~> 0.3.8"
   spec.add_dependency "thor", "~> 0.19.1"
+  spec.add_dependency "coderay"
+  spec.add_dependency "diffy"
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
