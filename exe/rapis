@@ -3,6 +3,5 @@
 $: << File.expand_path('../../lib', __FILE__)
 
 require 'rapis/cli'
-Version = Rapis::VERSION
 
 Rapis::Cli.start(ARGV)
