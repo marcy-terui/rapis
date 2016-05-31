@@ -1,0 +1,1 @@
+class OperationError < StandardError; end

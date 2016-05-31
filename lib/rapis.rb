@@ -1,7 +1,20 @@
-require "rapis/version"
-require "rapis/actions"
-require "rapis/cli"
-require "rapis/client"
-require "rapis/converter"
-require "rapis/logger"
-require "rapis/utils"
+require 'json'
+require 'yaml'
+require 'logger'
+require 'singleton'
+require 'base64'
+
+require 'thor'
+require 'aws-sdk'
+require 'dslh'
+require 'diffy'
+require 'coderay'
+
+require 'rapis/version'
+require 'rapis/actions'
+require 'rapis/cli'
+require 'rapis/client'
+require 'rapis/converter'
+require 'rapis/exceptions'
+require 'rapis/logger'
+require 'rapis/utils'

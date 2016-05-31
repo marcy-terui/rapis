@@ -1,10 +1,6 @@
-require 'logger'
-require 'singleton'
-
 module Rapis
   class TermColor
     class << self
-
       def green(msg)
         colorize 32, msg
       end
@@ -20,24 +16,30 @@ module Rapis
       def colorize(num, msg)
         "\e[#{num}m#{msg}\e[0m"
       end
-
     end
   end
 
+  def self.logger
+    Rapis::Logger.instance
+  end
+
+  #
+  # Default logger
+  #
   class Logger < Logger
     include Singleton
 
     def initialize
       super(STDERR)
 
-      self.formatter = proc do |severity, datetime, progname, msg|
+      self.formatter = proc do |_severity, _datetime, _progname, msg|
         "#{msg}\n"
       end
 
       self.level = Logger::INFO
     end
 
-    def debug(progname = nil, method_name = nil, msg)
+    def debug(msg, progname = nil, method_name = nil)
       super(progname) { { method_name: method_name, message: msg } }
     end
 
@@ -53,34 +55,10 @@ module Rapis
       super { Rapis::TermColor.red(msg) }
     end
 
-    def error(progname = nil, method_name = nil, msg, backtrace)
-      super(progname) { { method_name: method_name, message: msg, backtrace: backtrace } }
-    end
-
-    module Helper
-
-      def log(level, message)
-        logger = Rapis::Logger.instance
-        logger.send(level, message)
+    def error(msg, backtrace, progname = nil, method_name = nil)
+      super(progname) do
+        { method_name: method_name, message: msg, backtrace: backtrace }
       end
-
-      def info(msg)
-        log(:info, msg)
-      end
-
-      def warn(msg)
-        log(:warn, msg)
-      end
-
-      def fatal(msg)
-        log(:error, msg)
-      end
-
-      def debug(msg)
-        log(:debug, msg)
-      end
-
-      module_function :log, :info, :warn, :fatal, :debug
     end
   end
 end

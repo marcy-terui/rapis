@@ -1,0 +1,33 @@
+AllCops:
+  Exclude:
+    - 'bin/**'
+    - 'exe/**'
+    - Rakefile
+    - rapis.gemspec
+
+LineLength:
+  Max: 120
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Style/Documentation:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false

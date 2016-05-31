@@ -1,25 +1,16 @@
-require 'yaml'
-require 'json'
-require 'rapis/client'
-require 'rapis/converter'
-require 'rapis/logger'
-require 'rapis/utils'
-
 module Rapis
   class Actions
-    include Rapis::Logger::Helper
-
-    def initialize
-      @client = Rapis::Client.new
+    def initialize(client)
+      @client = client
       @converter = Rapis::Converter.new
     end
 
-    def create(name, options)
-      ret = @client.create(name, options['description'])
-      info("API id: #{ret.id}")
-      info("API name: #{ret.name}")
-      info("API description: #{ret.description}")
-      ret.warnings.each {|w| warn("WARNING: #{w}") } unless ret.warnings.nil?
+    def create(options)
+      ret = @client.create(options['name'], options['description'])
+      Rapis.logger.info("API id: #{ret.id}")
+      Rapis.logger.info("API name: #{ret.name}")
+      Rapis.logger.info("API description: #{ret.description}")
+      ret.warnings.each { |w| Rapis.logger.warn("WARNING: #{w}") } unless ret.warnings.nil?
     end
 
     def convert(options)
@@ -32,30 +23,33 @@ module Rapis
         output = YAML.dump(output)
         Rapis::Utils.print_yaml(output)
       else
-        raise "\"#{options['format']}\" format is not supported."
+        raise OperationError, "\"#{options['format']}\" format is not supported."
       end
       File.write(options['output'], output) unless options['output'].empty?
     end
 
     def list(options)
+      apis = []
       @client.get_apis.each do |a|
         if options['verbose']
           api = Rapis::Utils.struct_to_hash(a)
           api['stages'] = []
         else
           a_key = "#{a.id} (#{a.name})"
-          api = {a_key => []}
+          api = { a_key => [] }
         end
 
         @client.get_stages(a.id).each do |s|
           if options['verbose']
             api['stages'] << Rapis::Utils.struct_to_hash(s)
           else
-            api[a_key] = s.stage_name
+            api[a_key] << s.stage_name
           end
         end
         Rapis::Utils.print_yaml(YAML.dump(api))
+        apis << api
       end
+      apis
     end
 
     def export(options)
@@ -78,8 +72,8 @@ module Rapis
         options['rest_api'],
         @converter.to_h(File.read(options['file']))
       )
-      info("Applied the REST API configuration to \"#{ret.id}\" (#{ret.name})")
-      ret.warnings.each {|w| warn("WARNING: #{w}") } unless ret.warnings.nil?
+      Rapis.logger.info("Applied the REST API configuration to \"#{ret.id}\" (#{ret.name})")
+      ret.warnings.each { |w| Rapis.logger.warn("WARNING: #{w}") } unless ret.warnings.nil?
     end
 
     def deploy(options)
@@ -94,9 +88,9 @@ module Rapis
 
       ret = @client.deploy(args)
       summary = YAML.dump(Rapis::Utils.struct_to_hash(ret.api_summary))
-      info("Deployment id: #{ret.id}")
-      info("Deployment description: #{ret.description}")
-      info("API summary :\n#{summary}")
+      Rapis.logger.info("Deployment id: #{ret.id}")
+      Rapis.logger.info("Deployment description: #{ret.description}")
+      Rapis.logger.info("API summary :\n#{summary}")
     end
   end
 end
