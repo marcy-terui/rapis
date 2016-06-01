@@ -1,5 +1,10 @@
 # Rapis
 
+[![Gem Version](https://badge.fury.io/rb/rapis.svg)](https://badge.fury.io/rb/rapis)
+[![Build Status](https://travis-ci.org/marcy-terui/rapis.svg?branch=master)](https://travis-ci.org/marcy-terui/rapis)
+[![Coverage Status](https://coveralls.io/repos/github/marcy-terui/rapis/badge.svg?branch=master)](https://coveralls.io/github/marcy-terui/rapis?branch=master)
+
+
 Swagger as Ruby DSL and its deployment tool for Amazon API Gateway
 
 ## Installation
@@ -24,7 +29,7 @@ Or install it yourself as:
 Commands:
   rapis apply -r, --rest-api=REST_API                     # Apply the REST API configuration
   rapis convert -F, --format=FORMAT                       # Convert the REST API configuration to the specified format
-  rapis create                                            # Create REST API
+  rapis create -n, --name=NAME                            # Create REST API
   rapis deploy -r, --rest-api=REST_API -s, --stage=STAGE  # Deploy the current REST API configuration to the stage
   rapis diff -r, --rest-api=REST_API -s, --stage=STAGE    # Diff the local configuration and the remote configuration
   rapis export -r, --rest-api=REST_API -s, --stage=STAGE  # Export the configuration as Ruby DSL
@@ -43,9 +48,10 @@ Create REST API
 
 ```sh
 Usage:
-  rapis create
+  rapis create -n, --name=NAME
 
 Options:
+  -n, --name=NAME                  # Name
   -d, [--description=DESCRIPTION]  # Description
   -f, [--file=FILE]                # Configuration file
                                    # Default: Apifile
@@ -91,7 +97,7 @@ Options:
   -s, --stage=STAGE                            # The name of the stage
   -d, [--description=DESCRIPTION]              # The description for the deployment
   -D, [--stage-description=STAGE_DESCRIPTION]  # The description of the stage
-  -c, [--cache=CACHE]                          # Size of the cache cluster # accepts 0.5, 1.6, 6.1, 13.5, 28.4, 58.2, 118, 237
+  -c, [--cache=CACHE]                          # Size of the cache cluster
                                                # Default: 0.0
   -v, [--variables=key:value]                  # A map that defines the stage variables
   -f, [--file=FILE]                            # Configuration file
