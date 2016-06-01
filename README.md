@@ -3,6 +3,7 @@
 [![Gem Version](https://badge.fury.io/rb/rapis.svg)](https://badge.fury.io/rb/rapis)
 [![Build Status](https://travis-ci.org/marcy-terui/rapis.svg?branch=master)](https://travis-ci.org/marcy-terui/rapis)
 [![Coverage Status](https://coveralls.io/repos/github/marcy-terui/rapis/badge.svg?branch=master)](https://coveralls.io/github/marcy-terui/rapis?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcy-terui/rapis/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcy-terui/rapis/?branch=master)
 
 
 Swagger as Ruby DSL and its deployment tool for Amazon API Gateway
