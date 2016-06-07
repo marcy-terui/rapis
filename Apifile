@@ -8,19 +8,18 @@ rest_api do
   basePath "/test"
   schemes ["https"]
   paths do
-    path "/" do
+    item "/" do
       get do
         consumes ["application/json"]
         produces ["text/html"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             headers(
               {"Content-Type"=>{"type"=>"string"}})
           end
         end
         amazon_apigateway_integration do
-          type "mock"
           responses do
             default do
               statusCode 200
@@ -34,12 +33,13 @@ rest_api do
           requestTemplates(
             {"application/json"=>"{\"statusCode\": 200}"})
           passthroughBehavior "when_no_match"
+          type "mock"
         end
       end
       post do
         produces ["application/json"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -49,7 +49,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "http"
           responses do
             default do
               statusCode 200
@@ -60,13 +59,14 @@ rest_api do
           uri "http://petstore-demo-endpoint.execute-api.com/petstore/pets"
           passthroughBehavior "when_no_match"
           httpMethod "POST"
+          type "http"
         end
       end
       options do
         consumes ["application/json"]
         produces ["application/json"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -78,7 +78,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "mock"
           responses do
             default do
               statusCode 200
@@ -92,18 +91,25 @@ rest_api do
           requestTemplates(
             {"application/json"=>"{\"statusCode\": 200}"})
           passthroughBehavior "when_no_match"
+          type "mock"
         end
       end
     end
-    path "/pets" do
+    item "/pets" do
       get do
         produces ["application/json"]
-        parameters [
-          {"name"=>"type", "in"=>"query", "required"=>false, "type"=>"string"},
-          {"name"=>"page", "in"=>"query", "required"=>false, "type"=>"string"}
-        ]
+        parameters do
+          query "type" do
+            required false
+            type "string"
+          end
+          query "page" do
+            required false
+            type "string"
+          end
+        end
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -113,7 +119,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "http"
           responses do
             default do
               statusCode 200
@@ -127,12 +132,13 @@ rest_api do
           requestParameters(
             {"integration.request.querystring.page"=>"method.request.querystring.page",
              "integration.request.querystring.type"=>"method.request.querystring.type"})
+          type "http"
         end
       end
       post do
         produces ["application/json"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -142,7 +148,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "http"
           responses do
             default do
               statusCode 200
@@ -153,13 +158,14 @@ rest_api do
           uri "http://petstore-demo-endpoint.execute-api.com/petstore/pets"
           passthroughBehavior "when_no_match"
           httpMethod "POST"
+          type "http"
         end
       end
       options do
         consumes ["application/json"]
         produces ["application/json"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -171,7 +177,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "mock"
           responses do
             default do
               statusCode 200
@@ -185,17 +190,21 @@ rest_api do
           requestTemplates(
             {"application/json"=>"{\"statusCode\": 200}"})
           passthroughBehavior "when_no_match"
+          type "mock"
         end
       end
     end
-    path "/pets/{petId}" do
+    item "/pets/{petId}" do
       get do
         produces ["application/json"]
-        parameters [
-          {"name"=>"petId", "in"=>"path", "required"=>true, "type"=>"string"}
-        ]
+        parameters do
+          path "petId" do
+            required true
+            type "string"
+          end
+        end
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -205,7 +214,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "http"
           responses do
             default do
               statusCode 200
@@ -218,13 +226,14 @@ rest_api do
           httpMethod "GET"
           requestParameters(
             {"integration.request.path.petId"=>"method.request.path.petId"})
+          type "http"
         end
       end
       options do
         consumes ["application/json"]
         produces ["application/json"]
         responses do
-          code 200 do
+          code "200" do
             description "200 response"
             schema do
               ref "#/definitions/Empty"
@@ -236,7 +245,6 @@ rest_api do
           end
         end
         amazon_apigateway_integration do
-          type "mock"
           responses do
             default do
               statusCode 200
@@ -250,6 +258,7 @@ rest_api do
           requestTemplates(
             {"application/json"=>"{\"statusCode\": 200}"})
           passthroughBehavior "when_no_match"
+          type "mock"
         end
       end
     end
