@@ -168,6 +168,7 @@ EOS
         #{template_item_func}
         #{template_api_key_func}
         #{template_params_func}
+        #{template_include_func}
         EOS
     end
   end

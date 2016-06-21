@@ -4,6 +4,14 @@ module Rapis
       %w(query header path formData body)
     end
 
+    def template_include_func
+      <<-EOS
+      def _include(path, args = {})
+        instance_eval(File.read(path))
+      end
+      EOS
+    end
+
     def template_params_func
       funcs = <<-EOS
       def _param(name, i, block)

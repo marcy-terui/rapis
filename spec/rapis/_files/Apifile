@@ -1,0 +1,18 @@
+rest_api do
+  swagger "2.0"
+  info do
+    version "2016-05-27T17:07:04Z"
+    title "PetStore"
+  end
+  host "p0dvujrb13.execute-api.ap-northeast-1.amazonaws.com"
+  basePath "/test"
+  schemes ["https"]
+  paths do
+    _include 'spec/rapis/_files/paths.rb'
+  end
+  definitions do
+    Empty do
+      type "object"
+    end
+  end
+end
