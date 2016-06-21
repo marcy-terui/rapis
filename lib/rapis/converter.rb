@@ -59,43 +59,9 @@ EOS
           code_key_proc k
         when 'parameters', 'api_key'
           parameters_key_proc k
-        when /^(response|request)Parameters$/
-          integration_parameters_key_proc k
         else
           CHANGE_SETS.each { |f, t| k = k.gsub(f, t) }
           k
-        end
-      end
-    end
-
-    def integration_parameters_key_proc(k)
-      proc do |v, nested|
-        indents = v.match(/\n(\s+)/)
-        if v =~ /\n(\s+)/
-          indent = $1
-          v = instance_eval(v)
-          dsl = "#{k} do\n"
-          params = {}
-          convert = true
-          v.each do |k1, v1|
-            if k1 =~ /^(.+\..+\..+)\.(.+)$/
-              params[$1] = {} unless params.has_key?($1)
-              params[$1][$2] = v1
-            else
-              convert = false
-            end
-          end
-          if convert
-            params.each do |prefix, hash|
-              dsl << indent + "#{prefix.gsub('.', '_')}(\n"
-              dsl << indent + "  #{hash.pretty_inspect.strip.gsub("\n", "\n" + indent)})\n"
-            end
-            dsl << indent[2..-1] + "end\n"
-          else
-            "#{k} #{v}"
-          end
-        else
-          "#{k} #{v}"
         end
       end
     end
