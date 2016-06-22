@@ -4,6 +4,7 @@ AllCops:
     - 'exe/**'
     - Rakefile
     - rapis.gemspec
+    - 'spec/rapis/_files/**'
 
 LineLength:
   Max: 120

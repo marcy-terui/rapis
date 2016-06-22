@@ -87,9 +87,9 @@ EOS
     end
 
     def parameters_key_proc(k)
-      proc do |v, nested|
+      proc do |v, _|
         if v =~ /\n(\s+)/
-          indent = $1
+          indent = Regexp.last_match(1)
           v = instance_eval(v)
           dsl = "#{k} do\n"
           if v.is_a?(Array)
