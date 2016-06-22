@@ -147,9 +147,113 @@ Options:
                            # Default: Apifile
 ```
 
-## Sample
+## Example
 
-### JSON
+### Ruby DSL
+
+- Apifile
+
+```ruby
+rest_api do
+  swagger "2.0"
+  info do
+    version "2016-05-27T17:07:04Z"
+    title "PetStore"
+  end
+  host "p0dvujrb13.execute-api.ap-northeast-1.amazonaws.com"
+  basePath "/test"
+  schemes ["https"]
+  _include 'paths.rb'
+  _include 'definitions.rb'
+end
+```
+
+- paths.rb
+
+```ruby
+paths do
+  item "/pets/{petId}" do
+    get do
+      produces ["application/json"]
+      parameters do
+        path "petId" do
+          required true
+          type "string"
+        end
+      end
+      responses do
+        code "200" do
+          description "200 response"
+          schema do
+            ref "#/definitions/Empty"
+          end
+          headers(
+            {"Access-Control-Allow-Origin"=>{"type"=>"string"}})
+        end
+      end
+      amazon_apigateway_integration do
+        responses do
+          default do
+            statusCode 200
+            responseParameters(
+              {"method.response.header.Access-Control-Allow-Origin"=>"'*'"})
+          end
+        end
+        uri "http://petstore-demo-endpoint.execute-api.com/petstore/pets/{petId}"
+        passthroughBehavior "when_no_match"
+        httpMethod "GET"
+        requestParameters(
+          {"integration.request.path.petId"=>"method.request.path.petId"})
+        type "http"
+      end
+    end
+    options do
+      consumes ["application/json"]
+      produces ["application/json"]
+      responses do
+        code "200" do
+          description "200 response"
+          schema do
+            ref "#/definitions/Empty"
+          end
+          headers(
+            {"Access-Control-Allow-Origin"=>{"type"=>"string"},
+             "Access-Control-Allow-Methods"=>{"type"=>"string"},
+             "Access-Control-Allow-Headers"=>{"type"=>"string"}})
+        end
+      end
+      amazon_apigateway_integration do
+        responses do
+          default do
+            statusCode 200
+            responseParameters(
+              {"method.response.header.Access-Control-Allow-Methods"=>"'GET,OPTIONS'",
+               "method.response.header.Access-Control-Allow-Headers"=>
+                "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+               "method.response.header.Access-Control-Allow-Origin"=>"'*'"})
+          end
+        end
+        requestTemplates(
+          {"application/json"=>"{\"statusCode\": 200}"})
+        passthroughBehavior "when_no_match"
+        type "mock"
+      end
+    end
+  end
+end
+```
+
+- definitions.rb
+
+```ruby
+definitions do
+  Empty do
+    type "object"
+  end
+end
+```
+
+### JSON result
 
 ```json
 {
@@ -164,46 +268,18 @@ Options:
     "https"
   ],
   "paths": {
-    "/": {
+    "/pets/{petId}": {
       "get": {
-        "consumes": [
+        "produces": [
           "application/json"
         ],
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "200 response",
-            "headers": {
-              "Content-Type": {
-                "type": "string"
-              }
-            }
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
-        },
-        "x-amazon-apigateway-integration": {
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Content-Type": "'text/html'"
-              },
-              "responseTemplates": {
-                "text/html": "<html>\n    <head>\n        <style>\n        body {\n            color: #333;\n            font-family: Sans-serif;\n            max-width: 800px;\n            margin: auto;\n        }\n        </style>\n    </head>\n    <body>\n        <h1>Welcome to your Pet Store API</h1>\n        <p>\n            You have succesfully deployed your first API. You are seeing this HTML page because the <code>GET</code> method to the root resource of your API returns this content as a Mock integration.\n        </p>\n        <p>\n            The Pet Store API contains the <code>/pets</code> and <code>/pets/{petId}</code> resources. By making a <a href=\"/$context.stage/pets/\" target=\"_blank\"><code>GET</code> request</a> to <code>/pets</code> you can retrieve a list of Pets in your API. If you are looking for a specific pet, for example the pet with ID 1, you can make a <a href=\"/$context.stage/pets/1\" target=\"_blank\"><code>GET</code> request</a> to <code>/pets/1</code>.\n        </p>\n        <p>\n            You can use a REST client such as <a href=\"https://www.getpostman.com/\" target=\"_blank\">Postman</a> to test the <code>POST</code> methods in your API to create a new pet. Use the sample body below to send the <code>POST</code> request:\n        </p>\n        <pre>\n{\n    \"type\" : \"cat\",\n    \"price\" : 123.11\n}\n        </pre>\n    </body>\n</html>"
-              }
-            }
-          },
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200}"
-          },
-          "passthroughBehavior": "when_no_match",
-          "type": "mock"
-        }
-      },
-      "post": {
-        "produces": [
-          "application/json"
         ],
         "responses": {
           "200": {
@@ -227,9 +303,12 @@ Options:
               }
             }
           },
-          "uri": "http://petstore-demo-endpoint.execute-api.com/petstore/pets",
+          "uri": "http://petstore-demo-endpoint.execute-api.com/petstore/pets/{petId}",
           "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
+          "httpMethod": "GET",
+          "requestParameters": {
+            "integration.request.path.petId": "method.request.path.petId"
+          },
           "type": "http"
         }
       },
@@ -264,7 +343,7 @@ Options:
             "default": {
               "statusCode": "200",
               "responseParameters": {
-                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
                 "method.response.header.Access-Control-Allow-Origin": "'*'"
               }
@@ -286,118 +365,6 @@ Options:
   }
 }
 ```
-
-### Ruby DSL
-
-```ruby
-rest_api do
-  swagger "2.0"
-  info do
-    version "2016-05-27T17:07:04Z"
-    title "PetStore"
-  end
-  host "p0dvujrb13.execute-api.ap-northeast-1.amazonaws.com"
-  basePath "/test"
-  schemes ["https"]
-  paths do
-    path "/" do
-      get do
-        consumes ["application/json"]
-        produces ["text/html"]
-        responses do
-          code 200 do
-            description "200 response"
-            headers(
-              {"Content-Type"=>{"type"=>"string"}})
-          end
-        end
-        amazon_apigateway_integration do
-          responses do
-            default do
-              statusCode 200
-              responseParameters(
-                {"method.response.header.Content-Type"=>"'text/html'"})
-              responseTemplates(
-                {"text/html"=>
-                  "<html>\n    <head>\n        <style>\n        body {\n            color: #333;\n            font-family: Sans-serif;\n            max-width: 800px;\n            margin: auto;\n        }\n        </style>\n    </head>\n    <body>\n        <h1>Welcome to your Pet Store API</h1>\n        <p>\n            You have succesfully deployed your first API. You are seeing this HTML page because the <code>GET</code> method to the root resource of your API returns this content as a Mock integration.\n        </p>\n        <p>\n            The Pet Store API contains the <code>/pets</code> and <code>/pets/{petId}</code> resources. By making a <a href=\"/$context.stage/pets/\" target=\"_blank\"><code>GET</code> request</a> to <code>/pets</code> you can retrieve a list of Pets in your API. If you are looking for a specific pet, for example the pet with ID 1, you can make a <a href=\"/$context.stage/pets/1\" target=\"_blank\"><code>GET</code> request</a> to <code>/pets/1</code>.\n        </p>\n        <p>\n            You can use a REST client such as <a href=\"https://www.getpostman.com/\" target=\"_blank\">Postman</a> to test the <code>POST</code> methods in your API to create a new pet. Use the sample body below to send the <code>POST</code> request:\n        </p>\n        <pre>\n{\n    \"type\" : \"cat\",\n    \"price\" : 123.11\n}\n        </pre>\n    </body>\n</html>"})
-            end
-          end
-          requestTemplates(
-            {"application/json"=>"{\"statusCode\": 200}"})
-          passthroughBehavior "when_no_match"
-          type "mock"
-        end
-      end
-      post do
-        produces ["application/json"]
-        responses do
-          code 200 do
-            description "200 response"
-            schema do
-              ref "#/definitions/Empty"
-            end
-            headers(
-              {"Access-Control-Allow-Origin"=>{"type"=>"string"}})
-          end
-        end
-        amazon_apigateway_integration do
-          responses do
-            default do
-              statusCode 200
-              responseParameters(
-                {"method.response.header.Access-Control-Allow-Origin"=>"'*'"})
-            end
-          end
-          uri "http://petstore-demo-endpoint.execute-api.com/petstore/pets"
-          passthroughBehavior "when_no_match"
-          httpMethod "POST"
-          type "http"
-        end
-      end
-      options do
-        consumes ["application/json"]
-        produces ["application/json"]
-        responses do
-          code 200 do
-            description "200 response"
-            schema do
-              ref "#/definitions/Empty"
-            end
-            headers(
-              {"Access-Control-Allow-Origin"=>{"type"=>"string"},
-               "Access-Control-Allow-Methods"=>{"type"=>"string"},
-               "Access-Control-Allow-Headers"=>{"type"=>"string"}})
-          end
-        end
-        amazon_apigateway_integration do
-          responses do
-            default do
-              statusCode 200
-              responseParameters(
-                {"method.response.header.Access-Control-Allow-Methods"=>"'POST,OPTIONS'",
-                 "method.response.header.Access-Control-Allow-Headers"=>
-                  "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
-                 "method.response.header.Access-Control-Allow-Origin"=>"'*'"})
-            end
-          end
-          requestTemplates(
-            {"application/json"=>"{\"statusCode\": 200}"})
-          passthroughBehavior "when_no_match"
-          type "mock"
-        end
-      end
-    end
-  end
-  definitions do
-    Empty do
-      type "object"
-    end
-  end
-end
-```
-
-
-
 
 ## Development
 
