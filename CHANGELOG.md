@@ -1,5 +1,11 @@
 ## 0.1.2
 
+- Add `_include` method to DSL
+- Change `path` method to `item` method for DSL
+- Refactoring
+
+## 0.1.2
+
 - Adjust some command options
 - Refactoring
 
